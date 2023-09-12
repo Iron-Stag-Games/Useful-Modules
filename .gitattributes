@@ -1,0 +1,6 @@
+.github export-ignore
+.vscode export-ignore
+.gitattributes export-ignore
+foreman.toml export-ignore
+selene.toml export-ignore
+sourcemap.json export-ignore

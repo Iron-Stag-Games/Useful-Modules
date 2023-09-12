@@ -1,0 +1,86 @@
+{
+	"name": "Useful Modules",
+	"className": "Folder",
+	"filePaths": [],
+	"children": [
+		{
+			"name": "Util",
+			"className": "Folder",
+			"filePaths": [],
+			"children": [
+				{
+					"name": "Base93",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Base93.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "Force",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Force.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "Math",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Math.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "Net",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Net.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "SForce",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/SForce.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "Table",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Table.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "Tree",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/Tree.lua"
+					],
+					"children": []
+				},
+				{
+					"name": "UniqueIds",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/Util/UniqueIds.lua"
+					],
+					"children": []
+				}
+			]
+		},
+		{
+			"name": "Sound",
+			"className": "ModuleScript",
+			"filePaths": [
+				"Useful Modules/Sound.lua"
+			],
+			"children": []
+		}
+	]
+}
