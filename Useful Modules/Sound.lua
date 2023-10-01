@@ -31,6 +31,12 @@ local PART_EXPIRATION_TIME = 10
 local tempFolder = New.Instance("Folder", SoundService, `__{if RunService:IsServer() then "Server" else "Client"}_Temp`)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Module Variables
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sound.Defaults = {} :: {[string]: any}
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Module Functions
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -40,6 +46,9 @@ local tempFolder = New.Instance("Folder", SoundService, `__{if RunService:IsServ
 --- @return Sound -- The cloned Sound.
 function Sound:Play2D(source: Sound, newProperties: {[string]: any}?): Sound
 	local newSound = source:Clone()
+	for property, value in Sound.Defaults do
+		(newSound :: any)[property] = value
+	end
 	if newProperties then
 		for property, value in newProperties do
 			(newSound :: any)[property] = value
@@ -58,6 +67,9 @@ end
 --- @return Sound -- The cloned Sound.
 function Sound:PlayIn(source: Sound, parent: BasePart, newProperties: {[string]: any}?): Sound
 	local newSound = source:Clone()
+	for property, value in Sound.Defaults do
+		(newSound :: any)[property] = value
+	end
 	if newProperties then
 		for property, value in newProperties do
 			(newSound :: any)[property] = value
