@@ -34,6 +34,19 @@ function Table.SizeOf(tab: {[any]: any}): number
 	return size
 end
 
+--- Returns the combined values of a series of Tables.
+--- @param ... -- The Tables to combine.
+--- @return {[any]: any} -- The combined Table.
+function Table.Combine(...: {[any]: any}): {[any]: any}
+	local combined = {}
+	for _, tab in {...} do
+		for _, item in tab do
+			table.insert(combined, item)
+		end
+	end
+	return combined
+end
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 return Table
