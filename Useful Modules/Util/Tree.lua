@@ -35,7 +35,7 @@ end
 --- @yields
 --- @param instance -- The root Instance to wait in.
 --- @param ... -- The Names of the children to traverse.
-function Tree.Wait(instance: Instance, ...: string)
+function Tree.Wait(instance: Instance, ...: string): ()
 	if instance and instance.Parent then
 		for _, childName in {...} do
 			instance = instance:WaitForChild(childName)

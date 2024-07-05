@@ -9,7 +9,7 @@
 --- Executes a function in a new thread until it succeeds.
 --- @param func -- The function to execute.
 --- @param ... -- The parameters to pass to the function.
-return function(func: (...any) -> (...any), ...: any)
+return function(func: (...any) -> (...any), ...: any): ()
 	local args = {...}
 	task.spawn(function()
 		while not pcall(function()

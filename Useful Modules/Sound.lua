@@ -102,7 +102,7 @@ function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]
 end
 
 --- @ignore
-function Sound:Init()
+function Sound:Init(): ()
 	for _, object in SoundService.Master:GetChildren() do
 		if type(Sound[object.Name]) == "function" then error(`Indexing '{object.Name}' would overwrite a function`) end
 		Sound[object.Name] = object
