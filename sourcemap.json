@@ -12,7 +12,7 @@
 					"name": "Base93",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Base93.lua"
+						"Useful Modules/Util/Base93.luau"
 					],
 					"children": []
 				},
@@ -20,7 +20,7 @@
 					"name": "Force",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Force.lua"
+						"Useful Modules/Util/Force.luau"
 					],
 					"children": []
 				},
@@ -28,7 +28,7 @@
 					"name": "Math",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Math.lua"
+						"Useful Modules/Util/Math.luau"
 					],
 					"children": []
 				},
@@ -36,7 +36,7 @@
 					"name": "Net",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Net.lua"
+						"Useful Modules/Util/Net.luau"
 					],
 					"children": []
 				},
@@ -44,7 +44,7 @@
 					"name": "SForce",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/SForce.lua"
+						"Useful Modules/Util/SForce.luau"
 					],
 					"children": []
 				},
@@ -52,7 +52,7 @@
 					"name": "Table",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Table.lua"
+						"Useful Modules/Util/Table.luau"
 					],
 					"children": []
 				},
@@ -60,7 +60,7 @@
 					"name": "Tree",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/Tree.lua"
+						"Useful Modules/Util/Tree.luau"
 					],
 					"children": []
 				},
@@ -68,7 +68,7 @@
 					"name": "UniqueIds",
 					"className": "ModuleScript",
 					"filePaths": [
-						"Useful Modules/Util/UniqueIds.lua"
+						"Useful Modules/Util/UniqueIds.luau"
 					],
 					"children": []
 				}
@@ -78,7 +78,7 @@
 			"name": "Sound",
 			"className": "ModuleScript",
 			"filePaths": [
-				"Useful Modules/Sound.lua"
+				"Useful Modules/Sound.luau"
 			],
 			"children": []
 		}
