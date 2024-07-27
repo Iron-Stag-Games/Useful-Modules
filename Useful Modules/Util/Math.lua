@@ -18,13 +18,13 @@ function Math.InverseLerp(a: number, b: number, value: number): number
 end
 
 --- @todo
-function Math.IsInfNaN(...: number): boolean
+function Math.IsReal(...: number): boolean
 	for _, num in {...} do
-		if num == math.huge or num == -math.huge or num ~= num then
-			return true
+		if num * 0 ~= 0 then
+			return false
 		end
 	end
-	return false
+	return true
 end
 
 --- @todo

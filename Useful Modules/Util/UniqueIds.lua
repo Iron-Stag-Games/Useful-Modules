@@ -49,7 +49,7 @@ function UniqueIds.new(bytes: number, b93: boolean?, idsInUse: {string}?): Uniqu
 	end
 
 	return {
-		GetNewId = function(_self: UniqueIds): string
+		GetNewId = function(self: UniqueIds): string
 			if numUnusedIds > 0 then
 				local id = table.remove(unusedIds, numUnusedIds) :: string
 				numUnusedIds -= 1
@@ -71,10 +71,19 @@ function UniqueIds.new(bytes: number, b93: boolean?, idsInUse: {string}?): Uniqu
 			return false
 		end;
 
-		GetIdIndex = function(_self: UniqueIds, id: string): number
+		GetIdIndex = function(self: UniqueIds, id: string): number
 			return if b93 then Base93.B93ToInt(id) else string.unpack("I" .. bytes, id)
-		end
+		end;
 	}
+end
+
+--- Returns the index of a unique ID string.
+--- @param bytes -- The length of the string.
+--- @param id -- The unique ID string.
+--- @param b93 -- Whether or not to use the Base93 format.
+--- @return number -- The index of the unique ID string.
+function UniqueIds:GetIdIndex(bytes: number, id: string, b93: boolean?): number
+	return if b93 then Base93.B93ToInt(id) else string.unpack("I" .. bytes, id)
 end
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
