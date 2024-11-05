@@ -11,7 +11,9 @@
 				{
 					"name": "New",
 					"className": "ModuleScript",
-					"filePaths": [],
+					"filePaths": [
+						"../Pronghorn/Pronghorn/New.luau"
+					],
 					"children": []
 				}
 			]
@@ -99,6 +101,14 @@
 							"children": []
 						}
 					]
+				},
+				{
+					"name": "FunctionScheduler",
+					"className": "ModuleScript",
+					"filePaths": [
+						"Useful Modules/FunctionScheduler.luau"
+					],
+					"children": []
 				},
 				{
 					"name": "Sound",
