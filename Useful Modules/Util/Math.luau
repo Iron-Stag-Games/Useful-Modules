@@ -23,23 +23,48 @@ function Math.InverseLerp(a: number, b: number, alpha: number): number
 end
 
 --- @todo
-function Math.Damp(source: number, smoothing: number, dt: number): number
-    return source * smoothing ^ dt
+function Math.Damp(value: number, smoothing: number, dt: number): number
+	return value * smoothing ^ dt
 end
 
 --- @todo
-function Math.DampVector2(source: Vector2, smoothing: number, dt: number): Vector2
-    return source * smoothing ^ dt
+function Math.DampInverse(value: number, smoothing: number, dt: number): number
+	return value * (1 - smoothing ^ dt)
 end
 
 --- @todo
-function Math.DampVector3(source: Vector3, smoothing: number, dt: number): Vector3
-    return source * smoothing ^ dt
+function Math.DampTo(a: number, b: number, smoothing: number, dt: number): number
+	return Math.Lerp(a, b, 1 - smoothing ^ dt)
 end
 
 --- @todo
-function Math.DampTo(source: number, target: number, smoothing: number, dt: number): number
-    return Math.Lerp(source, target, 1 - smoothing ^ dt)
+function Math.DampVector2(value: Vector2, smoothing: number, dt: number): Vector2
+	return value * smoothing ^ dt
+end
+
+--- @todo
+function Math.DampVector2Inverse(value: Vector2, smoothing: number, dt: number): Vector2
+	return value * (1 - smoothing ^ dt)
+end
+
+--- @todo
+function Math.DampVector2To(a: Vector2, b: Vector2, smoothing: number, dt: number): Vector2
+	return a:Lerp(b, 1 - smoothing ^ dt)
+end
+
+--- @todo
+function Math.DampVector3(value: Vector3, smoothing: number, dt: number): Vector3
+	return value * smoothing ^ dt
+end
+
+--- @todo
+function Math.DampVector3Inverse(value: Vector3, smoothing: number, dt: number): Vector3
+	return value * (1 - smoothing ^ dt)
+end
+
+--- @todo
+function Math.DampVector3To(a: Vector3, b: Vector3, smoothing: number, dt: number): Vector3
+	return a:Lerp(b, 1 - smoothing ^ dt)
 end
 
 --- @todo
