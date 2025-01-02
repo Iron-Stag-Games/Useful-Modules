@@ -137,12 +137,12 @@ function SpatialCheck.PointInBox(point: Vector3, boxCFrame: CFrame, boxSize: Vec
 	local objectSpacePoint = boxCFrame:PointToObjectSpace(point)
 	boxSize /= 2
 
-    return objectSpacePoint.X >= - boxSize.X
-        and objectSpacePoint.X <= boxSize.X
-        and objectSpacePoint.Y >= - boxSize.Y
-        and objectSpacePoint.Y <= boxSize.Y
-        and objectSpacePoint.Z >= - boxSize.Z
-        and objectSpacePoint.Z <= boxSize.Z
+	return objectSpacePoint.X >= - boxSize.X
+		and objectSpacePoint.X <= boxSize.X
+		and objectSpacePoint.Y >= - boxSize.Y
+		and objectSpacePoint.Y <= boxSize.Y
+		and objectSpacePoint.Z >= - boxSize.Z
+		and objectSpacePoint.Z <= boxSize.Z
 end
 
 --- @todo
@@ -256,13 +256,13 @@ end
 --- @todo
 function SpatialCheck.PointInWedge(point: Vector3, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
 	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
-    return SpatialCheck.PointInBox(point, wedgeCFrame, wedgeSize) and SpatialCheck.PointInThreshold(point, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0))
+	return SpatialCheck.PointInBox(point, wedgeCFrame, wedgeSize) and SpatialCheck.PointInThreshold(point, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0))
 end
 
 --- @todo
 function SpatialCheck.SphereInWedge(sphereCenter: Vector3, sphereRadius: number, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
 	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
-    return SpatialCheck.PointInBox(sphereCenter, wedgeCFrame, wedgeSize - Vector3.one * sphereRadius * 2) and SpatialCheck.PointInThreshold(sphereCenter, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
+	return SpatialCheck.PointInBox(sphereCenter, wedgeCFrame, wedgeSize - Vector3.one * sphereRadius * 2) and SpatialCheck.PointInThreshold(sphereCenter, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
 end
 
 --- @todo
