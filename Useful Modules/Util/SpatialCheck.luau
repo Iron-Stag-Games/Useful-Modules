@@ -60,6 +60,14 @@ local function pointsFromPartIterator(part: BasePart): () -> Vector3?
 	end
 end
 
+local function getSphereCenterRadius(part: BasePart): (Vector3, number)
+	return part.CFrame.Position, math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
+end
+
+local function getCylinderLengthRadius(part: BasePart): (number, number)
+	return part.Size.X, math.min(part.Size.Y, part.Size.Z) / 2
+end
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Module Functions
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,9 +87,7 @@ end
 --- @todo
 function SpatialCheck.PartInThreshold(part: BasePart, cFrame: CFrame): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local sphereCenter = part.CFrame.Position
-		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInThreshold(sphereCenter, sphereRadius, cFrame)
 
 	else
@@ -110,9 +116,7 @@ end
 --- @todo
 function SpatialCheck.PartInSphere(part: BasePart, spherePosition: Vector3, sphereRadius: number): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local innerSphereCenter = part.CFrame.Position
-		local innerSphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local innerSphereCenter, innerSphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInSphere(innerSphereCenter, innerSphereRadius, spherePosition, sphereRadius)
 
 	else
@@ -149,9 +153,7 @@ end
 --- @todo
 function SpatialCheck.PartInBox(part: BasePart, boxCFrame: CFrame, boxSize: Vector3): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local sphereCenter = part.CFrame.Position
-		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInBox(sphereCenter, sphereRadius, boxCFrame, boxSize)
 
 	else
@@ -190,9 +192,7 @@ end
 --- @todo
 function SpatialCheck.PartInCylinder(part: BasePart, cylinderCFrame: CFrame, cylinderLength: number, cylinderRadius: number): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local sphereCenter = part.CFrame.Position
-		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInCylinder(sphereCenter, sphereRadius, cylinderCFrame, cylinderLength, cylinderRadius)
 
 	else
@@ -237,9 +237,7 @@ end
 --- @todo
 function SpatialCheck.PartInCone(part: BasePart, coneOriginCFrame: CFrame, coneLength: number, coneAngle: number): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local sphereCenter = part.CFrame.Position
-		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInCone(sphereCenter, sphereRadius, coneOriginCFrame, coneLength, coneAngle)
 
 	else
@@ -270,9 +268,7 @@ end
 --- @todo
 function SpatialCheck.PartInWedge(part: BasePart, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
 	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
-		local sphereCenter = part.CFrame.Position
-		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
-
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
 		return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, wedgeCFrame, wedgeSize)
 
 	else
@@ -333,6 +329,85 @@ function SpatialCheck.PartInSphericalSector(part: BasePart, sectorCFrame: CFrame
 	return
 		SpatialCheck.PartInSphere(part, sectorCFrame.Position, sectorRadius)
 		and SpatialCheck.PartInCone(part, sectorCFrame, sectorRadius, sectorAngle)
+end
+
+-- Part
+
+--- @todo
+function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
+	if part:IsA("Part") then
+		if part.Shape == Enum.PartType.Ball then
+			local sphereCenter, sphereRadius = getSphereCenterRadius(part)
+			return SpatialCheck.PointInSphere(point, sphereCenter, sphereRadius)
+
+		elseif part.Shape == Enum.PartType.Block then
+			return SpatialCheck.PointInBox(point, part.CFrame, part.Size)
+
+		elseif part.Shape == Enum.PartType.Cylinder then
+			local cylinderLength, cylinderRadius = getCylinderLengthRadius(part)
+			return SpatialCheck.PointInCylinder(point, part.CFrame, cylinderLength, cylinderRadius)
+
+		elseif part.Shape == Enum.PartType.Wedge then
+			return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
+		end
+
+	elseif part:IsA("WedgePart") then
+		return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
+	end
+
+	if part:IsA("Part") then
+		error(`PartType.{part.Shape} is unimplemented`)
+	else
+		error(`{part.ClassName} is unimplemented`)
+	end
+end
+
+--- @todo
+function SpatialCheck.SphereInPart(sphereCenter: Vector3, sphereRadius: number, part: BasePart): boolean
+	if part:IsA("Part") then
+		if part.Shape == Enum.PartType.Ball then
+			local outerSphereCenter, outerSphereRadius = getSphereCenterRadius(part)
+			return SpatialCheck.SphereInSphere(sphereCenter, sphereRadius, outerSphereCenter, outerSphereRadius)
+
+		elseif part.Shape == Enum.PartType.Block then
+			return SpatialCheck.SphereInBox(sphereCenter, sphereRadius, part.CFrame, part.Size)
+
+		elseif part.Shape == Enum.PartType.Cylinder then
+			local cylinderLength, cylinderRadius = getCylinderLengthRadius(part)
+			return SpatialCheck.SphereInCylinder(sphereCenter, sphereRadius, part.CFrame, cylinderLength, cylinderRadius)
+
+		elseif part.Shape == Enum.PartType.Wedge then
+			return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
+		end
+
+	elseif part:IsA("WedgePart") then
+		return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
+	end
+
+	if part:IsA("Part") then
+		error(`PartType.{part.Shape} is unimplemented`)
+	else
+		error(`{part.ClassName} is unimplemented`)
+	end
+end
+
+--- @todo
+function SpatialCheck.PartInPart(innerPart: BasePart, outerPart: BasePart): boolean
+	if innerPart:IsA("Part") and innerPart.Shape == Enum.PartType.Ball then
+		local sphereCenter = innerPart.CFrame.Position
+		local sphereRadius = math.min(innerPart.Size.X, innerPart.Size.Y, innerPart.Size.Z) / 2
+
+		return SpatialCheck.SphereInPart(sphereCenter, sphereRadius, outerPart)
+
+	else
+		for point in pointsFromPartIterator(innerPart) do
+			if not SpatialCheck.PointInPart(point, outerPart) then
+				return false
+			end
+		end
+
+		return true
+	end
 end
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
