@@ -253,6 +253,39 @@ function SpatialCheck.PartInCone(part: BasePart, coneOriginCFrame: CFrame, coneL
 	end
 end
 
+-- Wedge
+
+--- @todo
+function SpatialCheck.PointInWedge(point: Vector3, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
+	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
+    return SpatialCheck.PointInBox(point, wedgeCFrame, wedgeSize) and SpatialCheck.PointInThreshold(point, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0))
+end
+
+--- @todo
+function SpatialCheck.SphereInWedge(sphereCenter: Vector3, sphereRadius: number, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
+	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
+    return SpatialCheck.PointInBox(sphereCenter, wedgeCFrame, wedgeSize - Vector3.one * sphereRadius * 2) and SpatialCheck.PointInThreshold(sphereCenter, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
+end
+
+--- @todo
+function SpatialCheck.PartInWedge(part: BasePart, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
+	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
+		local sphereCenter = part.CFrame.Position
+		local sphereRadius = math.min(part.Size.X, part.Size.Y, part.Size.Z) / 2
+
+		return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, wedgeCFrame, wedgeSize)
+
+	else
+		for point in pointsFromPartIterator(part) do
+			if not SpatialCheck.PointInWedge(point, wedgeCFrame, wedgeSize) then
+				return false
+			end
+		end
+
+		return true
+	end
+end
+
 -- Capsule
 
 --- @todo
