@@ -349,17 +349,19 @@ function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
 
 		elseif part.Shape == Enum.PartType.Wedge then
 			return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
+
+		else
+			error(`PartType.{part.Shape} is unimplemented`)
 		end
 
 	elseif part:IsA("WedgePart") then
 		return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
+
+	elseif part:IsA("CornerWedgePart") then
+		error(`CornerWedgePart is unimplemented`)
 	end
 
-	if part:IsA("Part") then
-		error(`PartType.{part.Shape} is unimplemented`)
-	else
-		error(`{part.ClassName} is unimplemented`)
-	end
+	return SpatialCheck.PointInBox(point, part.CFrame, part.Size)
 end
 
 --- @todo
@@ -378,17 +380,19 @@ function SpatialCheck.SphereInPart(sphereCenter: Vector3, sphereRadius: number, 
 
 		elseif part.Shape == Enum.PartType.Wedge then
 			return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
+
+		else
+			error(`PartType.{part.Shape} is unimplemented`)
 		end
 
 	elseif part:IsA("WedgePart") then
 		return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
+
+	elseif part:IsA("CornerWedgePart") then
+		error(`CornerWedgePart is unimplemented`)
 	end
 
-	if part:IsA("Part") then
-		error(`PartType.{part.Shape} is unimplemented`)
-	else
-		error(`{part.ClassName} is unimplemented`)
-	end
+	return SpatialCheck.SphereInBox(sphereCenter, sphereRadius, part.CFrame, part.Size)
 end
 
 --- @todo
