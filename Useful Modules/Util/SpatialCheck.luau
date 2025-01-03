@@ -256,13 +256,17 @@ end
 --- @todo
 function SpatialCheck.PointInWedge(point: Vector3, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
 	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
-	return SpatialCheck.PointInBox(point, wedgeCFrame, wedgeSize) and SpatialCheck.PointInThreshold(point, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0))
+	return
+		SpatialCheck.PointInBox(point, wedgeCFrame, wedgeSize)
+		and SpatialCheck.PointInThreshold(point, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0))
 end
 
 --- @todo
 function SpatialCheck.SphereInWedge(sphereCenter: Vector3, sphereRadius: number, wedgeCFrame: CFrame, wedgeSize: Vector3): boolean
 	local angle = math.atan(wedgeSize.Z / wedgeSize.Y)
-	return SpatialCheck.PointInBox(sphereCenter, wedgeCFrame, wedgeSize - Vector3.one * sphereRadius * 2) and SpatialCheck.PointInThreshold(sphereCenter, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
+	return
+		SpatialCheck.PointInBox(sphereCenter, wedgeCFrame, wedgeSize - Vector3.one * sphereRadius * 2)
+		and SpatialCheck.PointInThreshold(sphereCenter, wedgeCFrame * CFrame.Angles(math.pi + angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
 end
 
 --- @todo
@@ -274,6 +278,45 @@ function SpatialCheck.PartInWedge(part: BasePart, wedgeCFrame: CFrame, wedgeSize
 	else
 		for point in pointsFromPartIterator(part) do
 			if not SpatialCheck.PointInWedge(point, wedgeCFrame, wedgeSize) then
+				return false
+			end
+		end
+
+		return true
+	end
+end
+
+-- CornerWedge
+
+--- @todo
+function SpatialCheck.PointInCornerWedge(point: Vector3, cornerWedgeCFrame: CFrame, cornerWedgeSize: Vector3): boolean
+	local angle = math.atan(cornerWedgeSize.Z / cornerWedgeSize.Y)
+	local angle2 = math.atan(cornerWedgeSize.X / cornerWedgeSize.Y)
+	return
+		SpatialCheck.PointInBox(point, cornerWedgeCFrame, cornerWedgeSize)
+		and SpatialCheck.PointInThreshold(point, cornerWedgeCFrame * CFrame.Angles(-angle, 0, 0))
+		and SpatialCheck.PointInThreshold(point, cornerWedgeCFrame * CFrame.Angles(0, -math.pi / 2, 0) * CFrame.Angles(-angle2, 0, 0))
+end
+
+--- @todo
+function SpatialCheck.SphereInCornerWedge(sphereCenter: Vector3, sphereRadius: number, cornerWedgeCFrame: CFrame, cornerWedgeSize: Vector3): boolean
+	local angle = math.atan(cornerWedgeSize.Z / cornerWedgeSize.Y)
+	local angle2 = math.atan(cornerWedgeSize.X / cornerWedgeSize.Y)
+	return
+		SpatialCheck.PointInBox(sphereCenter, cornerWedgeCFrame, cornerWedgeSize - Vector3.one * sphereRadius * 2)
+		and SpatialCheck.PointInThreshold(sphereCenter, cornerWedgeCFrame * CFrame.Angles(-angle, 0, 0) * CFrame.new(0, 0, -sphereRadius))
+		and SpatialCheck.PointInThreshold(sphereCenter, cornerWedgeCFrame * CFrame.Angles(0, -math.pi / 2, 0) * CFrame.Angles(-angle2, 0, 0) * CFrame.new(0, 0, -sphereRadius))
+end
+
+--- @todo
+function SpatialCheck.PartInCornerWedge(part: BasePart, cornerWedgeCFrame: CFrame, cornerWedgeSize: Vector3): boolean
+	if part:IsA("Part") and part.Shape == Enum.PartType.Ball then
+		local sphereCenter, sphereRadius = getSphereCenterRadius(part)
+		return SpatialCheck.SphereInCornerWedge(sphereCenter, sphereRadius, cornerWedgeCFrame, cornerWedgeSize)
+
+	else
+		for point in pointsFromPartIterator(part) do
+			if not SpatialCheck.PointInCornerWedge(point, cornerWedgeCFrame, cornerWedgeSize) then
 				return false
 			end
 		end
@@ -345,10 +388,13 @@ function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
 
 		elseif part.Shape == Enum.PartType.Cylinder then
 			local cylinderLength, cylinderRadius = getCylinderLengthRadius(part)
-			return SpatialCheck.PointInCylinder(point, part.CFrame, cylinderLength, cylinderRadius)
+			return SpatialCheck.PointInCylinder(point, part.CFrame * CFrame.Angles(0, math.pi / 2, 0) * CFrame.new(0, 0, part.Size.X / 2), cylinderLength, cylinderRadius)
 
 		elseif part.Shape == Enum.PartType.Wedge then
 			return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
+
+		elseif part.Shape == Enum.PartType.CornerWedge then
+			return SpatialCheck.PointInCornerWedge(point, part.CFrame, part.Size)
 
 		else
 			error(`PartType.{part.Shape} is unimplemented`)
@@ -358,7 +404,7 @@ function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
 		return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
 
 	elseif part:IsA("CornerWedgePart") then
-		error(`CornerWedgePart is unimplemented`)
+		return SpatialCheck.PointInCornerWedge(point, part.CFrame, part.Size)
 	end
 
 	return SpatialCheck.PointInBox(point, part.CFrame, part.Size)
@@ -381,6 +427,9 @@ function SpatialCheck.SphereInPart(sphereCenter: Vector3, sphereRadius: number, 
 		elseif part.Shape == Enum.PartType.Wedge then
 			return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
 
+		elseif part.Shape == Enum.PartType.CornerWedge then
+			return SpatialCheck.SphereInCornerWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
+
 		else
 			error(`PartType.{part.Shape} is unimplemented`)
 		end
@@ -389,7 +438,7 @@ function SpatialCheck.SphereInPart(sphereCenter: Vector3, sphereRadius: number, 
 		return SpatialCheck.SphereInWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
 
 	elseif part:IsA("CornerWedgePart") then
-		error(`CornerWedgePart is unimplemented`)
+		return SpatialCheck.SphereInCornerWedge(sphereCenter, sphereRadius, part.CFrame, part.Size)
 	end
 
 	return SpatialCheck.SphereInBox(sphereCenter, sphereRadius, part.CFrame, part.Size)
