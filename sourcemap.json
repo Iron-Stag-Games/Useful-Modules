@@ -45,6 +45,14 @@
 							"children": []
 						},
 						{
+							"name": "Gui",
+							"className": "ModuleScript",
+							"filePaths": [
+								"Useful Modules/Util/Gui.luau"
+							],
+							"children": []
+						},
+						{
 							"name": "Math",
 							"className": "ModuleScript",
 							"filePaths": [
