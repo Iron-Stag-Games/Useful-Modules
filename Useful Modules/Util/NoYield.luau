@@ -6,18 +6,19 @@
 ╚═══════════════════════════════════════════════╝
 ]]
 
---- Executes a function and yields until it succeeds.
---- @yields
---- @param func -- The function to execute.
---- @param ... -- The parameters to pass to the function.
---- @return ...any? -- The returns of the function.
+--- @todo
 return function(func: (...any) -> (...any), ...: any): ...any
 	local args = {...}
-	local success, result
-	repeat
-		success, result = pcall(function()
-			return func(unpack(args))
-		end)
-	until success or not task.wait()
-	return result
+	local result: {any}?;
+	local thread = task.spawn(function(): ()
+		result = {func(table.unpack(args))}
+	end)
+	if coroutine.status(thread) ~= "dead" then
+		task.cancel(thread)
+		error("Function cannot yield", 0)
+	end
+	if result then
+		return table.unpack(result)
+	end
+	return nil
 end
