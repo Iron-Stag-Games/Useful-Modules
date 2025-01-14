@@ -69,6 +69,14 @@
 							"children": []
 						},
 						{
+							"name": "NoYield",
+							"className": "ModuleScript",
+							"filePaths": [
+								"Useful Modules/Util/NoYield.luau"
+							],
+							"children": []
+						},
+						{
 							"name": "SForce",
 							"className": "ModuleScript",
 							"filePaths": [
