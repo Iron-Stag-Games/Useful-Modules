@@ -43,8 +43,9 @@ Sound.Defaults = {} :: {[string]: any}
 --- Clones, plays, and returns a Sound.
 --- @param source -- The Sound to clone and play.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
+--- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
-function Sound:Play2D(source: Sound, newProperties: {[string]: any}?): Sound
+function Sound:Play2D(source: Sound, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
 	local newSound = source:Clone()
 	for property, value in Sound.Defaults do
 		(newSound :: any)[property] = value
@@ -56,7 +57,9 @@ function Sound:Play2D(source: Sound, newProperties: {[string]: any}?): Sound
 	end
 	newSound.Parent = tempFolder
 	newSound:Play()
-	Debris:AddItem(newSound, PART_EXPIRATION_TIME)
+	if expiration ~= false then
+		Debris:AddItem(newSound, expiration or PART_EXPIRATION_TIME)
+	end
 	return newSound
 end
 
@@ -64,8 +67,9 @@ end
 --- @param source -- The Sound to clone and play.
 --- @param parent -- The Parent for the cloned Sound after creation.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
+--- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
-function Sound:PlayIn(source: Sound, parent: BasePart, newProperties: {[string]: any}?): Sound
+function Sound:PlayIn(source: Sound, parent: BasePart, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
 	local newSound = source:Clone()
 	for property, value in Sound.Defaults do
 		(newSound :: any)[property] = value
@@ -77,7 +81,9 @@ function Sound:PlayIn(source: Sound, parent: BasePart, newProperties: {[string]:
 	end
 	newSound.Parent = parent
 	newSound:Play()
-	Debris:AddItem(newSound, PART_EXPIRATION_TIME)
+	if expiration ~= false then
+		Debris:AddItem(newSound, expiration or PART_EXPIRATION_TIME)
+	end
 	return newSound
 end
 
@@ -85,8 +91,9 @@ end
 --- @param source -- The Sound to clone and play.
 --- @param position -- The Position for the cloned Sound after creation.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
+--- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
-function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]: any}?): Sound
+function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
 	local part = New.Instance("Part", tempFolder, "SoundPart", {
 		Transparency = 1;
 		Locked = true;
@@ -97,7 +104,9 @@ function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]
 		CanTouch = false;
 		Anchored = true;
 	})
-	Debris:AddItem(part, PART_EXPIRATION_TIME)
+	if expiration ~= false then
+		Debris:AddItem(part, expiration or PART_EXPIRATION_TIME)
+	end
 	return Sound:PlayIn(source, part, newProperties)
 end
 
