@@ -69,7 +69,7 @@ end
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
 --- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
-function Sound:PlayIn(source: Sound, parent: BasePart, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
+function Sound:PlayIn(source: Sound, parent: BasePart | Attachment, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
 	local newSound = source:Clone()
 	for property, value in Sound.Defaults do
 		(newSound :: any)[property] = value
