@@ -13,7 +13,6 @@ local Sound = {}
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 -- Services
-local Debris = game:GetService("Debris")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
@@ -58,7 +57,7 @@ function Sound:Play2D(source: Sound, newProperties: {[string]: any}?, expiration
 	newSound.Parent = tempFolder
 	newSound:Play()
 	if expiration ~= false then
-		Debris:AddItem(newSound, expiration or PART_EXPIRATION_TIME)
+		task.delay(expiration or PART_EXPIRATION_TIME, newSound.Destroy, newSound)
 	end
 	return newSound
 end
@@ -82,7 +81,7 @@ function Sound:PlayIn(source: Sound, parent: BasePart | Attachment, newPropertie
 	newSound.Parent = parent
 	newSound:Play()
 	if expiration ~= false then
-		Debris:AddItem(newSound, expiration or PART_EXPIRATION_TIME)
+		task.delay(expiration or PART_EXPIRATION_TIME, newSound.Destroy, newSound)
 	end
 	return newSound
 end
@@ -105,7 +104,7 @@ function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]
 		Anchored = true;
 	})
 	if expiration ~= false then
-		Debris:AddItem(part, expiration or PART_EXPIRATION_TIME)
+		task.delay(expiration or PART_EXPIRATION_TIME, part.Destroy, part)
 	end
 	return Sound:PlayIn(source, part, newProperties)
 end
