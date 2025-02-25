@@ -45,21 +45,20 @@ Sound.Defaults = {} :: {[string]: any}
 --- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
 function Sound:Play2D(source: Sound, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
-	local newSound = source:Clone()
 	for property, value in Sound.Defaults do
-		(newSound :: any)[property] = value
+		(source :: any)[property] = value
 	end
 	if newProperties then
 		for property, value in newProperties do
-			(newSound :: any)[property] = value
+			(source :: any)[property] = value
 		end
 	end
-	newSound.Parent = tempFolder
-	newSound:Play()
+	source.Parent = tempFolder
+	source:Play()
 	if expiration ~= false then
-		task.delay(expiration or PART_EXPIRATION_TIME, newSound.Destroy, newSound)
+		task.delay(expiration or PART_EXPIRATION_TIME, source.Destroy, source)
 	end
-	return newSound
+	return source
 end
 
 --- Clones, plays, and returns a Sound in a BasePart.
@@ -69,21 +68,20 @@ end
 --- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
 function Sound:PlayIn(source: Sound, parent: BasePart | Attachment, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
-	local newSound = source:Clone()
 	for property, value in Sound.Defaults do
-		(newSound :: any)[property] = value
+		(source :: any)[property] = value
 	end
 	if newProperties then
 		for property, value in newProperties do
-			(newSound :: any)[property] = value
+			(source :: any)[property] = value
 		end
 	end
-	newSound.Parent = parent
-	newSound:Play()
+	source.Parent = parent
+	source:Play()
 	if expiration ~= false then
-		task.delay(expiration or PART_EXPIRATION_TIME, newSound.Destroy, newSound)
+		task.delay(expiration or PART_EXPIRATION_TIME, source.Destroy, source)
 	end
-	return newSound
+	return source
 end
 
 --- Clones, plays, and returns a Sound at a Position in Workspace.
