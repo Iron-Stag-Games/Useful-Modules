@@ -16,9 +16,6 @@ local Sound = {}
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
--- Core
-local New = require(script.Parent.Parent.Pronghorn.New)
-
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Helper Variables
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -27,7 +24,9 @@ local New = require(script.Parent.Parent.Pronghorn.New)
 local PART_EXPIRATION_TIME = 10
 
 -- Objects
-local tempFolder = New.Instance("Folder", SoundService, `__{if RunService:IsServer() then "Server" else "Client"}_Temp`)
+local tempFolder = Instance.new("Folder")
+tempFolder.Name = `__{if RunService:IsServer() then "Server" else "Client"}_Temp`
+tempFolder.Parent = SoundService
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Module Variables
@@ -91,16 +90,17 @@ end
 --- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The cloned Sound.
 function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
-	local part = New.Instance("Part", tempFolder, "SoundPart", {
-		Transparency = 1;
-		Locked = true;
-		Size = Vector3.new();
-		CFrame = CFrame.new(position);
-		CanCollide = false;
-		CanQuery = false;
-		CanTouch = false;
-		Anchored = true;
-	})
+	local part = Instance.new("Part")
+	part.Name = "SoundPart"
+	part.Transparency = 1
+	part.Locked = true
+	part.Size = Vector3.new()
+	part.CFrame = CFrame.new(position)
+	part.CanCollide = false
+	part.CanQuery = false
+	part.CanTouch = false
+	part.Anchored = true
+	part.Parent = tempFolder
 	if expiration ~= false then
 		task.delay(expiration or PART_EXPIRATION_TIME, part.Destroy, part)
 	end
