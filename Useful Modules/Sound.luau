@@ -38,7 +38,7 @@ Sound.Defaults = {} :: {[string]: any}
 -- Module Functions
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
---- Clones, plays, and returns a Sound.
+--- Plays and returns a Sound.
 --- @param source -- The Sound to clone and play.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
 --- @param expiration -- The time it takes before the Sound is destroyed.
@@ -60,7 +60,7 @@ function Sound:Play2D(source: Sound, newProperties: {[string]: any}?, expiration
 	return source
 end
 
---- Clones, plays, and returns a Sound in a BasePart.
+--- Plays and returns a Sound in a BasePart.
 --- @param source -- The Sound to clone and play.
 --- @param parent -- The Parent for the cloned Sound after creation.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
@@ -83,7 +83,7 @@ function Sound:PlayIn(source: Sound, parent: BasePart | Attachment, newPropertie
 	return source
 end
 
---- Clones, plays, and returns a Sound at a Position in Workspace.
+--- Plays and returns a Sound at a Position in Workspace.
 --- @param source -- The Sound to clone and play.
 --- @param position -- The Position for the cloned Sound after creation.
 --- @param newProperties -- A table of properties to apply to the cloned Sound.
@@ -101,10 +101,7 @@ function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]
 	part.CanTouch = false
 	part.Anchored = true
 	part.Parent = tempFolder
-	if expiration ~= false then
-		task.delay(expiration or PART_EXPIRATION_TIME, part.Destroy, part)
-	end
-	return Sound:PlayIn(source, part, newProperties)
+	return Sound:PlayIn(source, part, newProperties, expiration)
 end
 
 --- @ignore
