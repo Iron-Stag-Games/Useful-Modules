@@ -45,7 +45,7 @@ end
 
 --- @todo
 function FunctionScheduler:AddOnce(delay: number, func: Func, ...: any): ScheduledFunc
-	local scheduledFunc: ScheduledFunc = {Func = func, Args = {...}, Delay = delay, Once = true, LastRan = 0}
+	local scheduledFunc: ScheduledFunc = {Func = func, Args = {...}, Delay = delay, Once = true, LastRan = os.clock()}
 	table.insert(scheduledFuncs, scheduledFunc)
 	updateCallsPerSecond()
 
@@ -77,16 +77,16 @@ function FunctionScheduler:Init(): ()
 	stepEvent:Connect(function(dt: number): ()
 		if #scheduledFuncs == 0 then return end
 		
-		local currentTime = os.clock()
+		local now = os.clock()
 		local hz = 1 / dt
 		local maxCallsPerFrame = math.ceil(callsPerSecond / hz)
 
 		for _ = 1, maxCallsPerFrame do
 			local removeOffset = 0
 			for index, scheduledFunc in scheduledFuncs do
-				if scheduledFunc.LastRan + scheduledFunc.Delay > currentTime then continue end
+				if scheduledFunc.LastRan + scheduledFunc.Delay > now then continue end
 
-				scheduledFunc.LastRan = currentTime
+				scheduledFunc.LastRan = now
 				task.spawn(scheduledFunc.Func, table.unpack(scheduledFunc.Args))
 
 				if scheduledFunc.Once then
