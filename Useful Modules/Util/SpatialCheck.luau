@@ -14,6 +14,7 @@ local SpatialCheck = {}
 -- Helper Variables
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+local NAN = tonumber("nan") :: number
 local PART_POINTS: {[Enum.PartType]: {Vector3}?} = {
 	[Enum.PartType.Block] = {
 		Vector3.new(0.5, 0.5, 0.5);
@@ -75,13 +76,14 @@ end
 -- Threshold
 
 --- @todo
-function SpatialCheck.PointInThreshold(point: Vector3, cFrame: CFrame): boolean
-	return cFrame:PointToObjectSpace(point).Z <= 0
+function SpatialCheck.PointInThreshold(point: Vector3, cFrame: CFrame): (boolean, number)
+	local dist = cFrame:PointToObjectSpace(point).Z
+	return dist <= 0, dist
 end
 
 --- @todo
 function SpatialCheck.SphereInThreshold(sphereCenter: Vector3, sphereRadius: number, cFrame: CFrame): boolean
-	return SpatialCheck.PointInThreshold(sphereCenter, cFrame * CFrame.new(0, 0, -sphereRadius))
+	return SpatialCheck.PointInThreshold(sphereCenter, cFrame * CFrame.new(0, 0, -sphereRadius)) == true
 end
 
 --- @todo
@@ -104,13 +106,14 @@ end
 -- Sphere
 
 --- @todo
-function SpatialCheck.PointInSphere(point: Vector3, spherePosition: Vector3, sphereRadius: number): boolean
-	return (point - spherePosition).Magnitude <= sphereRadius
+function SpatialCheck.PointInSphere(point: Vector3, spherePosition: Vector3, sphereRadius: number): (boolean, number)
+	local magnitude = (point - spherePosition).Magnitude
+	return magnitude <= sphereRadius, magnitude
 end
 
 --- @todo
 function SpatialCheck.SphereInSphere(innerSphereCenter: Vector3, innerSphereRadius: number, outerSphereCenter: Vector3, outerSphereRadius: number): boolean
-	return SpatialCheck.PointInSphere(innerSphereCenter, outerSphereCenter, outerSphereRadius - innerSphereRadius)
+	return SpatialCheck.PointInSphere(innerSphereCenter, outerSphereCenter, outerSphereRadius - innerSphereRadius) == true
 end
 
 --- @todo
@@ -133,21 +136,23 @@ end
 -- Box
 
 --- @todo
-function SpatialCheck.PointInBox(point: Vector3, boxCFrame: CFrame, boxSize: Vector3): boolean
+function SpatialCheck.PointInBox(point: Vector3, boxCFrame: CFrame, boxSize: Vector3): (boolean, Vector3)
 	local objectSpacePoint = boxCFrame:PointToObjectSpace(point)
 	boxSize /= 2
 
-	return objectSpacePoint.X >= - boxSize.X
-		and objectSpacePoint.X <= boxSize.X
-		and objectSpacePoint.Y >= - boxSize.Y
-		and objectSpacePoint.Y <= boxSize.Y
-		and objectSpacePoint.Z >= - boxSize.Z
-		and objectSpacePoint.Z <= boxSize.Z
+	return
+			objectSpacePoint.X >= - boxSize.X
+			and objectSpacePoint.X <= boxSize.X
+			and objectSpacePoint.Y >= - boxSize.Y
+			and objectSpacePoint.Y <= boxSize.Y
+			and objectSpacePoint.Z >= - boxSize.Z
+			and objectSpacePoint.Z <= boxSize.Z,
+		objectSpacePoint
 end
 
 --- @todo
 function SpatialCheck.SphereInBox(sphereCenter: Vector3, sphereRadius: number, boxCFrame: CFrame, boxSize: Vector3): boolean
-	return SpatialCheck.PointInBox(sphereCenter, boxCFrame, boxSize - Vector3.one * sphereRadius * 2)
+	return SpatialCheck.PointInBox(sphereCenter, boxCFrame, boxSize - Vector3.one * sphereRadius * 2) == true
 end
 
 --- @todo
@@ -170,23 +175,18 @@ end
 -- Cylinder
 
 --- @todo
-function SpatialCheck.PointInCylinder(point: Vector3, cylinderCFrame: CFrame, cylinderLength: number, cylinderRadius: number): boolean
+function SpatialCheck.PointInCylinder(point: Vector3, cylinderCFrame: CFrame, cylinderLength: number, cylinderRadius: number): (boolean, number, number)
 	local cylinderPosition = cylinderCFrame.Position
 	local cylinderDir = cylinderCFrame.LookVector
 	local pointDist = (point - cylinderPosition):Dot(cylinderDir)
+	local orthDist = ((point - cylinderPosition) - cylinderDir * pointDist).Magnitude
 
-	if pointDist < 0 or pointDist > cylinderLength then
-		return false
-	end
-
-	local orthDistance = ((point - cylinderPosition) - cylinderDir * pointDist).Magnitude
-
-	return orthDistance <= cylinderRadius
+	return pointDist >= 0 and pointDist <= cylinderLength and orthDist <= cylinderRadius, pointDist, orthDist
 end
 
 --- @todo
 function SpatialCheck.SphereInCylinder(sphereCenter: Vector3, sphereRadius: number, cylinderCFrame: CFrame, cylinderLength: number, cylinderRadius: number): boolean
-	return SpatialCheck.PointInCylinder(sphereCenter, cylinderCFrame * CFrame.new(0, 0, -sphereRadius), cylinderLength - sphereRadius * 2, cylinderRadius - sphereRadius)
+	return SpatialCheck.PointInCylinder(sphereCenter, cylinderCFrame * CFrame.new(0, 0, -sphereRadius), cylinderLength - sphereRadius * 2, cylinderRadius - sphereRadius) == true
 end
 
 --- @todo
@@ -209,29 +209,24 @@ end
 -- Cone
 
 --- @todo
-function SpatialCheck.PointInCone(point: Vector3, coneOriginCFrame: CFrame, coneLength: number, coneAngle: number): boolean
-	if coneLength <= 0 or coneAngle <= 0 or coneAngle >= math.pi then return false end
+function SpatialCheck.PointInCone(point: Vector3, coneOriginCFrame: CFrame, coneLength: number, coneAngle: number): (boolean, number, number)
+	if coneLength <= 0 or coneAngle <= 0 or coneAngle >= math.pi then return false, NAN, NAN end
 
 	local coneRadius = coneLength * math.tan(coneAngle)
 	local conePosition = coneOriginCFrame.Position
 	local coneDir = coneOriginCFrame.LookVector
 	local pointDist = (point - conePosition):Dot(coneDir)
-
-	if pointDist < 0 or pointDist > coneLength then
-		return false
-	end
-
 	local sectionRadius = (pointDist / coneLength) * coneRadius
-	local orthDistance = ((point - conePosition) - coneDir * pointDist).Magnitude
+	local orthDist = ((point - conePosition) - coneDir * pointDist).Magnitude
 
-	return orthDistance <= sectionRadius
+	return pointDist >= 0 and pointDist <= coneLength and orthDist <= sectionRadius, pointDist, orthDist
 end
 
 --- @todo
 function SpatialCheck.SphereInCone(sphereCenter: Vector3, sphereRadius: number, coneOriginCFrame: CFrame, coneLength: number, coneAngle: number): boolean
 	local coneRadius = coneLength * math.tan(coneAngle) - sphereRadius
 	local offset = coneLength - coneRadius * math.sin(coneAngle)
-	return SpatialCheck.PointInCone(sphereCenter, coneOriginCFrame * CFrame.new(0, 0, -offset), coneLength - offset - sphereRadius, coneAngle)
+	return SpatialCheck.PointInCone(sphereCenter, coneOriginCFrame * CFrame.new(0, 0, -offset), coneLength - offset - sphereRadius, coneAngle) == true
 end
 
 --- @todo
@@ -328,11 +323,13 @@ end
 -- Capsule
 
 --- @todo
-function SpatialCheck.PointInCapsule(point: Vector3, capsuleCFrame: CFrame, capsuleLength: number, capsuleRadius: number): boolean
+function SpatialCheck.PointInCapsule(point: Vector3, capsuleCFrame: CFrame, capsuleLength: number, capsuleRadius: number): (boolean, number, number)
+	local isIn, pointDist, orthDist = SpatialCheck.PointInCylinder(point, capsuleCFrame, capsuleLength, capsuleRadius)
 	return
-		SpatialCheck.PointInSphere(point, capsuleCFrame.Position, capsuleRadius)
-		or SpatialCheck.PointInSphere(point, (capsuleCFrame * CFrame.new(0, 0, -capsuleLength)).Position, capsuleRadius)
-		or SpatialCheck.PointInCylinder(point, capsuleCFrame, capsuleLength, capsuleRadius)
+			isIn
+			or SpatialCheck.PointInSphere(point, capsuleCFrame.Position, capsuleRadius)
+			or SpatialCheck.PointInSphere(point, (capsuleCFrame * CFrame.new(0, 0, -capsuleLength)).Position, capsuleRadius),
+		pointDist, orthDist
 end
 
 --- @todo
@@ -354,10 +351,12 @@ end
 -- Spherical Sector
 
 --- @todo
-function SpatialCheck.PointInSphericalSector(point: Vector3, sectorCFrame: CFrame, sectorRadius: number, sectorAngle: number): boolean
+function SpatialCheck.PointInSphericalSector(point: Vector3, sectorCFrame: CFrame, sectorRadius: number, sectorAngle: number): (boolean, number, number)
+	local isIn, pointDist, orthDist = SpatialCheck.PointInCone(point, sectorCFrame, sectorRadius, sectorAngle)
 	return
-		SpatialCheck.PointInSphere(point, sectorCFrame.Position, sectorRadius)
-		and SpatialCheck.PointInCone(point, sectorCFrame, sectorRadius, sectorAngle)
+			isIn
+			and SpatialCheck.PointInSphere(point, sectorCFrame.Position, sectorRadius),
+		pointDist, orthDist
 end
 
 --- @todo
