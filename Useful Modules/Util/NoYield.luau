@@ -9,19 +9,18 @@
 --- @todo
 return function(func: (...any) -> (...any), ...: any): ...any
 	local args = {...}
-	local result: {any}?;
-	local errorMsg: string?
-	local thread = task.spawn(xpcall, function(): ()
+	local result: {any}?
+	local success = false
+	local thread = task.spawn(function(): ()
 		result = {func(table.unpack(args))}
-	end, function(err: string): ()
-		errorMsg = err
+		success = true
 	end)
-	if errorMsg then
-		error(errorMsg, 0)
-	end
 	if coroutine.status(thread) ~= "dead" then
 		task.cancel(thread)
 		error("Function cannot yield", 0)
+	end
+	if not success then
+		error("Function errored during NoYield", 0)
 	end
 	if result then
 		return table.unpack(result)

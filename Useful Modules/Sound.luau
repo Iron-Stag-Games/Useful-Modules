@@ -90,29 +90,14 @@ end
 --- @param expiration -- The time it takes before the Sound is destroyed.
 --- @return Sound -- The Sound.
 function Sound:PlayAt(source: Sound, position: Vector3, newProperties: {[string]: any}?, expiration: (number | false)?): Sound
-	--[[local attachment = Instance.new("Attachment")
+	local attachment = Instance.new("Attachment")
 	attachment.Name = "SoundAttachment"
 	attachment.CFrame = CFrame.new(position)
 	attachment.Parent = tempFolder
 	if expiration ~= false then
 		task.delay(expiration or PART_EXPIRATION_TIME, attachment.Destroy, attachment)
 	end
-	return Sound:PlayIn(source, attachment, newProperties, expiration)]]
-	local part = Instance.new("Part")
-	part.Name = "SoundPart"
-	part.Transparency = 1
-	part.Locked = true
-	part.Size = Vector3.new()
-	part.CFrame = CFrame.new(position)
-	part.CanCollide = false
-	part.CanQuery = false
-	part.CanTouch = false
-	part.Anchored = true
-	part.Parent = tempFolder
-	if expiration ~= false then
-		task.delay(expiration or PART_EXPIRATION_TIME, part.Destroy, part)
-	end
-	return Sound:PlayIn(source, part, newProperties, expiration)
+	return Sound:PlayIn(source, attachment, newProperties, expiration)
 end
 
 --- @ignore
