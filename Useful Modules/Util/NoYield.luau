@@ -7,7 +7,7 @@
 ]]
 
 --- @todo
-return function(func: (...any) -> (...any), ...: any): ...any
+return function(hint: string, func: (...any) -> (...any), ...: any): ...any
 	local args = {...}
 	local result: {any}?
 	local success = false
@@ -17,10 +17,10 @@ return function(func: (...any) -> (...any), ...: any): ...any
 	end)
 	if coroutine.status(thread) ~= "dead" then
 		task.cancel(thread)
-		error("Function cannot yield", 0)
+		error(`Function cannot yield ({hint})`, 0)
 	end
 	if not success then
-		error("Function errored during NoYield", 0)
+		error(`Function errored during NoYield ({hint})`, 0)
 	end
 	if result then
 		return table.unpack(result)
