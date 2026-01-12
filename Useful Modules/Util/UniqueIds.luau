@@ -75,7 +75,7 @@ end
 --- @param b93 -- Whether or not to use the Base93 format.
 --- @return number -- The index of the unique ID string.
 function UniqueIds.GetIndexFromId(bytes: number, id: string, b93: boolean?): number
-	return if b93 then Base93.B93ToInt(id) else string.unpack("I" .. bytes, id)
+	return if b93 then Base93.B93ToInt(id) else string.unpack("I" .. bytes, id) :: number
 end
 
 --- Returns the unique ID string of an index.

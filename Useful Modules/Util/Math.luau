@@ -13,16 +13,6 @@ local Math = {}
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 --- @todo
-function Math.Lerp(a: number, b: number, alpha: number): number
-	return a + (b - a) * alpha
-end
-
---- @todo
-function Math.InverseLerp(a: number, b: number, alpha: number): number
-	return (alpha - a) / (b - a)
-end
-
---- @todo
 function Math.Damp(value: number, smoothing: number, dt: number): number
 	return value * smoothing ^ dt
 end
@@ -34,7 +24,7 @@ end
 
 --- @todo
 function Math.DampTo(a: number, b: number, smoothing: number, dt: number): number
-	return Math.Lerp(a, b, 1 - smoothing ^ dt)
+	return math.map(1 - smoothing ^ dt, 0, 1, a, b)
 end
 
 --- @todo

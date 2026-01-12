@@ -380,14 +380,14 @@ function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
 	if part:IsA("Part") then
 		if part.Shape == Enum.PartType.Ball then
 			local sphereCenter, sphereRadius = getSphereCenterRadius(part)
-			return SpatialCheck.PointInSphere(point, sphereCenter, sphereRadius)
+			return SpatialCheck.PointInSphere(point, sphereCenter, sphereRadius) == true
 
 		elseif part.Shape == Enum.PartType.Block then
-			return SpatialCheck.PointInBox(point, part.CFrame, part.Size)
+			return SpatialCheck.PointInBox(point, part.CFrame, part.Size) == true
 
 		elseif part.Shape == Enum.PartType.Cylinder then
 			local cylinderLength, cylinderRadius = getCylinderLengthRadius(part)
-			return SpatialCheck.PointInCylinder(point, part.CFrame * CFrame.Angles(0, math.pi / 2, 0) * CFrame.new(0, 0, part.Size.X / 2), cylinderLength, cylinderRadius)
+			return SpatialCheck.PointInCylinder(point, part.CFrame * CFrame.Angles(0, math.pi / 2, 0) * CFrame.new(0, 0, part.Size.X / 2), cylinderLength, cylinderRadius) == true
 
 		elseif part.Shape == Enum.PartType.Wedge then
 			return SpatialCheck.PointInWedge(point, part.CFrame, part.Size)
@@ -406,7 +406,7 @@ function SpatialCheck.PointInPart(point: Vector3, part: BasePart): boolean
 		return SpatialCheck.PointInCornerWedge(point, part.CFrame, part.Size)
 	end
 
-	return SpatialCheck.PointInBox(point, part.CFrame, part.Size)
+	return SpatialCheck.PointInBox(point, part.CFrame, part.Size) == true
 end
 
 --- @todo

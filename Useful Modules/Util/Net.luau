@@ -31,7 +31,7 @@ end
 --- @param ... -- The packed booleans to unpack.
 --- @return ...boolean -- The unpacked booleans.
 function Net.UnpackBooleans(value: number, numBooleans: number): ...boolean
-	local booleans = {}
+	local booleans: {boolean} = {}
 
 	for index = numBooleans - 1, 0, -1 do
 		table.insert(booleans, bit32.extract(value, index, 1) ~= 0)
@@ -46,7 +46,7 @@ end
 --- @param ... -- The floats to pack.
 --- @return ...number -- The packed floats.
 function Net.PackSignedAlpha8(...: number): ...number
-	local normals = {}
+	local normals: {number} = {}
 
 	for _, normal in {...} do
 		table.insert(normals, math.round((normal + 1) * 127.5))
@@ -59,7 +59,7 @@ end
 --- @param ... -- The packed floats to unpack.
 --- @return ...number -- The unpacked floats.
 function Net.UnpackSignedAlpha8(...: number): ...number
-	local normals = {}
+	local normals: {number} = {}
 
 	for _, normal in {...} do
 		table.insert(normals, normal / 127.5 - 1)
@@ -74,7 +74,7 @@ end
 --- @param ... -- The floats to pack.
 --- @return ...number -- The packed floats.
 function Net.PackSignedAlpha16(...: number): ...number
-	local normals = {}
+	local normals: {number} = {}
 
 	for _, normal in {...} do
 		table.insert(normals, math.round((normal + 1) * 32767.5))
@@ -87,7 +87,7 @@ end
 --- @param ... -- The packed floats to unpack.
 --- @return ...number -- The unpacked floats.
 function Net.UnpackSignedAlpha16(...: number): ...number
-	local normals = {}
+	local normals: {number} = {}
 
 	for _, normal in {...} do
 		table.insert(normals, normal / 32767.5 - 1)
@@ -102,7 +102,7 @@ end
 --- @param ... -- The floats to pack.
 --- @return ...number -- The packed floats.
 function Net.PackUnsignedAlpha8(...: number): ...number
-	local alphas = {}
+	local alphas: {number} = {}
 
 	for _, alpha in {...} do
 		table.insert(alphas, math.round(alpha * 255))
@@ -115,7 +115,7 @@ end
 --- @param ... -- The packed floats to unpack.
 --- @return ...number -- The unpacked floats.
 function Net.UnpackUnsignedAlpha8(...: number): ...number
-	local alphas = {}
+	local alphas: {number} = {}
 
 	for _, alpha in {...} do
 		table.insert(alphas, alpha / 255)
@@ -130,7 +130,7 @@ end
 --- @param ... -- The floats to pack.
 --- @return ...number -- The packed floats.
 function Net.PackUnsignedAlpha16(...: number): ...number
-	local alphas = {}
+	local alphas: {number} = {}
 
 	for _, alpha in {...} do
 		table.insert(alphas, math.round(alpha * 65535))
@@ -143,7 +143,7 @@ end
 --- @param ... -- The packed floats to unpack.
 --- @return ...number -- The unpacked floats.
 function Net.UnpackUnsignedAlpha16(...: number): ...number
-	local alphas = {}
+	local alphas: {number} = {}
 
 	for _, alpha in {...} do
 		table.insert(alphas, alpha / 65535)
